@@ -194,12 +194,20 @@ Menu.Scale = 1.0
 function Menu.GetScaledPosition()
     local scale = Menu.Scale or 1.0
     local screenWidth = 1920
-    if Susano and Susano.GetScreenWidth then
-        screenWidth = Susano.GetScreenWidth()
+    local screenHeight = 1080
+    if Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
+        local sw, sh = Susano.GetScreenWidth(), Susano.GetScreenHeight()
+        if sw and sw > 0 then screenWidth = sw end
+        if sh and sh > 0 then screenHeight = sh end
+    elseif GetActiveScreenResolution then
+        local sw, sh = GetActiveScreenResolution()
+        if sw and sw > 0 then screenWidth = sw end
+        if sh and sh > 0 then screenHeight = sh end
     end
     local scaledWidth = Menu.Position.width * scale
     local rightMargin = 50
     local xPos = screenWidth - scaledWidth - rightMargin + (Menu.Position.xOffset or 0)
+    xPos = math.max(0, math.min(screenWidth - scaledWidth, xPos))
     return {
         x = xPos,
         y = Menu.Position.y,
@@ -2372,6 +2380,14 @@ function Menu.HandleInput()
         local screenW = 1920
         local screenH = 1080
         if Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
+            local sw, sh = Susano.GetScreenWidth(), Susano.GetScreenHeight()
+            if sw and sw > 0 then screenW = sw end
+            if sh and sh > 0 then screenH = sh end
+        elseif GetActiveScreenResolution then
+            local sw, sh = GetActiveScreenResolution()
+            if sw and sw > 0 then screenW = sw end
+            if sh and sh > 0 then screenH = sh end
+        end
             screenW = Susano.GetScreenWidth()
             screenH = Susano.GetScreenHeight()
         end
