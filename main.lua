@@ -1,3 +1,6 @@
+-- this is same thing of this local LibraryURL = "https://raw.githubusercontent.com/rizzX5552/rizz/main/main.lua" if u need update online u just do changes here wil it updated it on online
+
+
 local Menu = {}
 Menu.Visible = false
 Menu.CurrentCategory = 2
@@ -2373,9 +2376,6 @@ function Menu.HandleInput()
     if Menu.EditorMode then
         local moveSpeed = 8.0
         local screenW, screenH = Menu.GetScreenSize()
-            screenW = Susano.GetScreenWidth()
-            screenH = Susano.GetScreenHeight()
-        end
 
         if Susano and Susano.GetCursorPos and Susano.GetAsyncKeyState then
             local cursorPos = Susano.GetCursorPos()
