@@ -186,16 +186,24 @@ Menu.Position = {
     itemRadius = 4,
     scrollbarWidth = 12,
     scrollbarPadding = 3,
-    headerRadius = 6
+    headerRadius = 6,
+    xOffset = 0
 }
 Menu.Scale = 1.0
 
 function Menu.GetScaledPosition()
     local scale = Menu.Scale or 1.0
+    local screenWidth = 1920
+    if Susano and Susano.GetScreenWidth then
+        screenWidth = Susano.GetScreenWidth()
+    end
+    local scaledWidth = Menu.Position.width * scale
+    local rightMargin = 50
+    local xPos = screenWidth - scaledWidth - rightMargin + (Menu.Position.xOffset or 0)
     return {
-        x = Menu.Position.x,
+        x = xPos,
         y = Menu.Position.y,
-        width = Menu.Position.width * scale,
+        width = scaledWidth,
         itemHeight = Menu.Position.itemHeight * scale,
         mainMenuHeight = Menu.Position.mainMenuHeight * scale,
         headerHeight = Menu.Position.headerHeight * scale,
@@ -2401,9 +2409,10 @@ function Menu.HandleInput()
                 end
             end
             
-            local menuX = Menu.Position.x
+            local scaledPos = Menu.GetScaledPosition()
+            local menuX = scaledPos.x
             local menuY = Menu.Position.y
-            local menuWidth = Menu.Position.width
+            local menuWidth = scaledPos.width
             
             local totalHeight = Menu.Position.headerHeight
             if Menu.OpenedCategory then
@@ -2446,10 +2455,13 @@ function Menu.HandleInput()
                     local newX = mouseX - Menu.EditorDragOffsetX
                     local newY = mouseY - Menu.EditorDragOffsetY
                     
-                    local maxX = math.max(0, screenW - menuWidth)
+                    local baseX = screenW - menuWidth - 50
+                    local newOffset = newX - baseX
+                    local maxX = baseX
+                    local minX = -(screenW - menuWidth - 50)
                     local maxY = math.max(0, screenH - totalHeight)
                     
-                    Menu.Position.x = math.max(0, math.min(maxX, newX))
+                    Menu.Position.xOffset = math.max(minX, math.min(maxX, newOffset))
                     Menu.Position.y = math.max(0, math.min(maxY, newY))
                 end
                 
@@ -2473,10 +2485,10 @@ function Menu.HandleInput()
                 Menu.Position.y = math.min(screenH - 200, Menu.Position.y + moveSpeed)
             end
             if leftDown == true then
-                Menu.Position.x = math.max(0, Menu.Position.x - moveSpeed)
+                Menu.Position.xOffset = Menu.Position.xOffset - moveSpeed
             end
             if rightDown == true then
-                Menu.Position.x = math.min(screenW - Menu.Position.width, Menu.Position.x + moveSpeed)
+                Menu.Position.xOffset = Menu.Position.xOffset + moveSpeed
             end
 
             if Menu.IsKeyJustPressed(0x0D) then
