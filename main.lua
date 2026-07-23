@@ -1,6 +1,3 @@
--- this is same thing of this local LibraryURL = "https://raw.githubusercontent.com/rizzX5552/rizz/main/main.lua" if u need update online u just do changes here wil it updated it on online
-
-
 local Menu = {}
 Menu.Visible = false
 Menu.CurrentCategory = 2
