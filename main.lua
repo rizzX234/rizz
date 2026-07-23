@@ -1,3 +1,6 @@
+-- this is same thing of this local LibraryURL = "https://raw.githubusercontent.com/rizzX5552/rizz/main/main.lua" if u need update online u just do changes here wil it updated it on online
+
+
 local Menu = {}
 Menu.Visible = false
 Menu.CurrentCategory = 2
@@ -191,19 +194,29 @@ Menu.Position = {
 }
 Menu.Scale = 1.0
 
+function Menu.GetScreenSize()
+    local w, h = 1280, 720
+    if GetActiveScreenResolution then
+        local sw, sh = GetActiveScreenResolution()
+        if sw and sw > 100 then w = sw end
+        if sh and sh > 100 then h = sh end
+    end
+    if w <= 100 and Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
+        local sw, sh = Susano.GetScreenWidth(), Susano.GetScreenHeight()
+        if sw and sw > 100 then w = sw end
+        if sh and sh > 100 then h = sh end
+    end
+    if w <= 100 and GetScreenResolution then
+        local sw, sh = GetScreenResolution()
+        if sw and sw > 100 then w = sw end
+        if sh and sh > 100 then h = sh end
+    end
+    return w, h
+end
+
 function Menu.GetScaledPosition()
     local scale = Menu.Scale or 1.0
-    local screenWidth = 1920
-    local screenHeight = 1080
-    if Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
-        local sw, sh = Susano.GetScreenWidth(), Susano.GetScreenHeight()
-        if sw and sw > 0 then screenWidth = sw end
-        if sh and sh > 0 then screenHeight = sh end
-    elseif GetActiveScreenResolution then
-        local sw, sh = GetActiveScreenResolution()
-        if sw and sw > 0 then screenWidth = sw end
-        if sh and sh > 0 then screenHeight = sh end
-    end
+    local screenWidth, screenHeight = Menu.GetScreenSize()
     local scaledWidth = Menu.Position.width * scale
     local rightMargin = 50
     local xPos = screenWidth - scaledWidth - rightMargin + (Menu.Position.xOffset or 0)
@@ -1392,12 +1405,7 @@ end
 function Menu.DrawLoadingBar(alpha)
     if alpha <= 0 then return end
     
-    local screenWidth = 1920
-    local screenHeight = 1080
-    if Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
-        screenWidth = Susano.GetScreenWidth()
-        screenHeight = Susano.GetScreenHeight()
-    end
+    local screenWidth, screenHeight = Menu.GetScreenSize()
 
     local centerX = screenWidth / 2
     local centerY = screenHeight - 150
@@ -1592,12 +1600,7 @@ end
 function Menu.DrawKeySelector(alpha)
     if alpha <= 0 then return end
 
-    local screenWidth = 1920
-    local screenHeight = 1080
-    if Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
-        screenWidth = Susano.GetScreenWidth()
-        screenHeight = Susano.GetScreenHeight()
-    end
+    local screenWidth, screenHeight = Menu.GetScreenSize()
 
     local padding = 15
     local cornerRadius = 8
@@ -1681,12 +1684,7 @@ function Menu.DrawKeybindsInterface(alpha)
         return
     end
 
-    local screenWidth = 1920
-    local screenHeight = 1080
-    if Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
-        screenWidth = Susano.GetScreenWidth()
-        screenHeight = Susano.GetScreenHeight()
-    end
+    local screenWidth, screenHeight = Menu.GetScreenSize()
 
     local activeBinds = {}
     for _, cat in ipairs(Menu.Categories) do
@@ -2377,17 +2375,7 @@ function Menu.HandleInput()
 
     if Menu.EditorMode then
         local moveSpeed = 8.0
-        local screenW = 1920
-        local screenH = 1080
-        if Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
-            local sw, sh = Susano.GetScreenWidth(), Susano.GetScreenHeight()
-            if sw and sw > 0 then screenW = sw end
-            if sh and sh > 0 then screenH = sh end
-        elseif GetActiveScreenResolution then
-            local sw, sh = GetActiveScreenResolution()
-            if sw and sw > 0 then screenW = sw end
-            if sh and sh > 0 then screenH = sh end
-        end
+        local screenW, screenH = Menu.GetScreenSize()
             screenW = Susano.GetScreenWidth()
             screenH = Susano.GetScreenHeight()
         end
@@ -2935,12 +2923,7 @@ end
 function Menu.DrawInputWindow()
     if not Menu.InputOpen then return end
     
-    local screenWidth = 1920
-    local screenHeight = 1080
-    if Susano and Susano.GetScreenWidth and Susano.GetScreenHeight then
-        screenWidth = Susano.GetScreenWidth()
-        screenHeight = Susano.GetScreenHeight()
-    end
+    local screenWidth, screenHeight = Menu.GetScreenSize()
     
     if Susano and Susano.DrawRectFilled then
         Susano.DrawRectFilled(0, 0, screenWidth, screenHeight, 0, 0, 0, 0.6, 0)
